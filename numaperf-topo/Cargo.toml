@@ -14,7 +14,7 @@ description = "NUMA topology discovery and CPU locality mapping"
 readme = "README.md"
 
 [dependencies]
-numaperf-core = { path = "../numaperf-core" }
+numaperf-core = { version = "0.1.0", path = "../numaperf-core" }
 libc.workspace = true
 
 [dev-dependencies]

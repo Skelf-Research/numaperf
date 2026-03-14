@@ -14,7 +14,7 @@ description = "NUMA-aware memory allocation and placement policies"
 readme = "README.md"
 
 [dependencies]
-numaperf-core = { path = "../numaperf-core" }
-numaperf-topo = { path = "../numaperf-topo" }
-numaperf-affinity = { path = "../numaperf-affinity" }
+numaperf-core = { version = "0.1.0", path = "../numaperf-core" }
+numaperf-topo = { version = "0.1.0", path = "../numaperf-topo" }
+numaperf-affinity = { version = "0.1.0", path = "../numaperf-affinity" }
 libc.workspace = true

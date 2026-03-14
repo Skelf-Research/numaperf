@@ -14,11 +14,11 @@ description = "NUMA-first runtime for latency-critical Rust applications"
 readme = "README.md"
 
 [dependencies]
-numaperf-core = { path = "../numaperf-core" }
-numaperf-topo = { path = "../numaperf-topo" }
-numaperf-affinity = { path = "../numaperf-affinity" }
-numaperf-mem = { path = "../numaperf-mem" }
-numaperf-sched = { path = "../numaperf-sched" }
-numaperf-sharded = { path = "../numaperf-sharded" }
-numaperf-io = { path = "../numaperf-io" }
-numaperf-perf = { path = "../numaperf-perf" }
+numaperf-core = { version = "0.1.0", path = "../numaperf-core" }
+numaperf-topo = { version = "0.1.0", path = "../numaperf-topo" }
+numaperf-affinity = { version = "0.1.0", path = "../numaperf-affinity" }
+numaperf-mem = { version = "0.1.0", path = "../numaperf-mem" }
+numaperf-sched = { version = "0.1.0", path = "../numaperf-sched" }
+numaperf-sharded = { version = "0.1.0", path = "../numaperf-sharded" }
+numaperf-io = { version = "0.1.0", path = "../numaperf-io" }
+numaperf-perf = { version = "0.1.0", path = "../numaperf-perf" }

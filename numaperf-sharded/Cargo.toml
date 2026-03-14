@@ -14,6 +14,6 @@ description = "Per-node sharded data structures for NUMA systems"
 readme = "README.md"
 
 [dependencies]
-numaperf-core = { path = "../numaperf-core" }
-numaperf-topo = { path = "../numaperf-topo" }
+numaperf-core = { version = "0.1.0", path = "../numaperf-core" }
+numaperf-topo = { version = "0.1.0", path = "../numaperf-topo" }
 libc.workspace = true

@@ -14,6 +14,6 @@ description = "NUMA locality observability and metrics collection"
 readme = "README.md"
 
 [dependencies]
-numaperf-core = { path = "../numaperf-core" }
-numaperf-topo = { path = "../numaperf-topo" }
-numaperf-sharded = { path = "../numaperf-sharded" }
+numaperf-core = { version = "0.1.0", path = "../numaperf-core" }
+numaperf-topo = { version = "0.1.0", path = "../numaperf-topo" }
+numaperf-sharded = { version = "0.1.0", path = "../numaperf-sharded" }
