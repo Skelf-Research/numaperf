@@ -2,7 +2,7 @@
 
 [![Crates.io](https://img.shields.io/crates/v/numaperf.svg)](https://crates.io/crates/numaperf)
 [![Documentation](https://img.shields.io/badge/docs-skelfresearch.com-blue)](https://docs.skelfresearch.com/numaperf)
-[![License](https://img.shields.io/crates/l/numaperf.svg)](https://github.com/Skelf-Research/numaperf#license)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Skelf-Research/numaperf/blob/main/LICENSE)
 [![CI](https://github.com/Skelf-Research/numaperf/actions/workflows/ci.yml/badge.svg)](https://github.com/Skelf-Research/numaperf/actions)
 [![MSRV](https://img.shields.io/badge/MSRV-1.70-blue.svg)](https://github.com/Skelf-Research/numaperf)
 
@@ -105,12 +105,7 @@ numaperf is organized as a workspace. Use the `numaperf` facade crate for everyt
 
 ## License
 
-Licensed under either of:
-
-- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
-- MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
-
-at your option.
+Licensed under the [MIT License](LICENSE).
 
 ## Contributing
 
