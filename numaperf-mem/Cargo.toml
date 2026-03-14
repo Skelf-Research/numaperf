@@ -1,0 +1,20 @@
+[package]
+name = "numaperf-mem"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+keywords.workspace = true
+categories.workspace = true
+description = "NUMA-aware memory allocation and placement policies"
+readme = "README.md"
+
+[dependencies]
+numaperf-core = { path = "../numaperf-core" }
+numaperf-topo = { path = "../numaperf-topo" }
+numaperf-affinity = { path = "../numaperf-affinity" }
+libc.workspace = true

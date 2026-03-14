@@ -1,89 +1,126 @@
 # numaperf
 
-NUMA-first runtime building blocks for bandwidth-bound systems.
+[![Crates.io](https://img.shields.io/crates/v/numaperf.svg)](https://crates.io/crates/numaperf)
+[![Documentation](https://img.shields.io/badge/docs-skelfresearch.com-blue)](https://docs.skelfresearch.com/numaperf)
+[![License](https://img.shields.io/crates/l/numaperf.svg)](https://github.com/Skelf-Research/numaperf#license)
+[![CI](https://github.com/Skelf-Research/numaperf/actions/workflows/ci.yml/badge.svg)](https://github.com/Skelf-Research/numaperf/actions)
+[![MSRV](https://img.shields.io/badge/MSRV-1.70-blue.svg)](https://github.com/Skelf-Research/numaperf)
 
-**What it is**
-`numaperf` is a Rust workspace that provides explicit control over NUMA placement, pinning, scheduling, and locality observability. It is designed for database engines and other systems that scale on large multi-socket machines and need predictable memory and CPU locality.
+**NUMA-first runtime for latency-critical Rust applications.**
 
-**Why numaperf?**
+numaperf gives you explicit control over memory placement, thread pinning, and work scheduling on NUMA systems. Stop guessing where your data lives and start guaranteeing it.
 
-| Approach | Trade-off |
-|----------|-----------|
-| **First-touch policy** | Simple but fragile. Initialization patterns determine placement, often accidentally. Refactoring breaks locality. |
-| **numactl / libnuma** | Process-level control. No per-region granularity, no runtime observability, C-only API. |
-| **Allocator NUMA modes** (mimalloc, jemalloc) | Good for small objects but doesn't address large regions, scheduling, or cross-node traffic. |
-| **numaperf** | Explicit per-region placement, topology-aware scheduling, cross-node observability, and hard-mode enforcement when you need guarantees. |
+## Why numaperf?
 
-**Quick example**
-```rust
-use numaperf_topo::Topology;
-use numaperf_affinity::ScopedPin;
-use numaperf_mem::{NumaRegion, MemPolicy, HugePageMode, Prefault};
+On multi-socket servers, memory access latency varies by 2-3x depending on which CPU accesses which memory. Most applications ignore this, leading to unpredictable performance. numaperf makes NUMA a first-class concern:
 
-// 1. Discover topology
-let topo = Topology::discover()?;
-let node0 = topo.numa_nodes()[0].id();
+| Approach | Limitation |
+|----------|------------|
+| **First-touch policy** | Fragile. Initialization order determines placement. Refactoring breaks locality. |
+| **numactl / libnuma** | Process-level only. No per-region control, C API, no runtime observability. |
+| **NUMA-aware allocators** | Good for small objects, but doesn't address large buffers, scheduling, or cross-node traffic. |
+| **numaperf** | Explicit per-region placement, topology-aware scheduling, cross-node observability, hard-mode enforcement. |
 
-// 2. Pin this thread to node 0's CPUs
-let _pin = ScopedPin::pin_current(topo.cpu_set(node0))?;
+## Quick Start
 
-// 3. Allocate 2 GB bound to node 0
-let buffer = NumaRegion::anon(
-    2 * 1024 * 1024 * 1024,
-    MemPolicy::Bind([node0].into()),
-    HugePageMode::TransparentOn,
-    Prefault::ParallelTouch,
-)?;
-
-// buffer.as_mut_slice() is now guaranteed local to node 0
+```bash
+cargo add numaperf
 ```
 
-**Goals**
-- Make NUMA a first-class runtime concern, not a best-effort optimization.
-- Offer explicit memory placement for large regions where locality matters.
-- Provide topology-aware scheduling with enforceable policies.
-- Ship observability so cross-node traffic becomes visible.
-- Keep crate boundaries clean so projects can adopt only what they need.
+```rust
+use numaperf::{Topology, ScopedPin, NumaRegion, MemPolicy, NodeMask, Prefault};
 
-**Non-goals**
-- Implement database algorithms or buffer manager policies.
-- Provide a full async runtime or general-purpose task system.
-- Guarantee identical behavior across non-Linux platforms.
+fn main() -> Result<(), numaperf::NumaError> {
+    // Discover NUMA topology
+    let topo = Topology::discover()?;
+    let node0 = topo.numa_nodes()[0].id();
 
-**Crate layout**
-- `numaperf`: Facade crate that re-exports all public APIs.
-- `numaperf-core`: Shared types, error model, and configuration.
-- `numaperf-topo`: Topology discovery and locality maps.
-- `numaperf-affinity`: Thread pinning and CPU set management.
-- `numaperf-mem`: NUMA-aware memory placement and policy enforcement.
-- `numaperf-sched`: Topology-aware work scheduling and stealing.
-- `numaperf-sharded`: NUMA-local shared structures and counters.
-- `numaperf-io`: Device locality helpers for NVMe and NICs.
-- `numaperf-perf`: Locality observability and metrics.
+    // Pin this thread to node 0's CPUs
+    let _pin = ScopedPin::to_node(&topo, node0)?;
 
-**Operating modes**
-- **Soft mode**: Uses best-effort pinning and placement, degrades gracefully when privileges or kernel features are missing.
-- **Hard mode**: Enforces strict pinning, explicit placement, prefaulting, and cross-node traffic limits.
+    // Allocate 1 GB bound to node 0
+    let region = NumaRegion::anon(
+        1024 * 1024 * 1024,
+        MemPolicy::Bind(NodeMask::single(node0)),
+        Default::default(),
+        Prefault::Touch,
+    )?;
 
-**Platform support**
-- Linux is the primary target for full functionality.
-- Other platforms may support pinning and partial topology but will lack memory policy controls.
+    // region.as_mut_slice() is now guaranteed local to node 0
+    println!("Allocated {} bytes on node {}", region.len(), node0);
+    Ok(())
+}
+```
 
-**MVP focus**
-1. `numaperf-topo` with stable topology discovery and CPU set APIs.
-2. `numaperf-affinity` with scoped pinning and pinned worker spawns.
-3. `numaperf-mem` with explicit placement for large regions.
-4. `numaperf-sched` with per-node queues and configurable steal order.
+## Features
 
-**Docs (current)**
-- `docs/architecture.md`
-- `docs/api.md`
-- `docs/roadmap.md`
-- `docs/kernel-requirements.md`
+- **Topology Discovery** - Query NUMA nodes, CPUs, and inter-node distances at runtime
+- **Thread Pinning** - RAII-based CPU affinity with `ScopedPin`
+- **Memory Placement** - Explicit policies: Bind, Preferred, Interleave, Local
+- **Work Scheduling** - `NumaExecutor` with per-node worker pools and configurable work stealing
+- **Sharded Data** - `NumaSharded<T>` for per-node data structures, `ShardedCounter` for lock-free counting
+- **Device Locality** - Map NICs and NVMe devices to their NUMA nodes
+- **Observability** - Track locality ratios, generate health reports, identify cross-node traffic
+- **Hard Mode** - Strict enforcement when you need guarantees, graceful degradation when you don't
 
-**Docs (planned)**
-- `docs/getting-started.md`
-- `docs/hard-mode.md`
+## Use Cases
 
-**Status**
-This repository is a design-first workspace. APIs will be implemented incrementally, starting with topology, affinity, memory placement, and scheduling.
+**Database Engines** - Pin buffer pools to specific nodes, schedule queries on data-local workers
+
+**Network Processing** - Allocate packet buffers on the NIC's local node, process without cross-node copies
+
+**Scientific Computing** - Partition large arrays across nodes, compute with guaranteed locality
+
+**Trading Systems** - Eliminate latency variance from NUMA effects with strict pinning and placement
+
+## Documentation
+
+- [**Getting Started**](https://docs.skelfresearch.com/numaperf/getting-started/quickstart/) - 5-minute tutorial
+- [**Guides**](https://docs.skelfresearch.com/numaperf/guides/topology-discovery/) - How-to guides for common tasks
+- [**API Reference**](https://docs.skelfresearch.com/numaperf/api/overview/) - Complete API documentation
+- [**Examples**](https://docs.skelfresearch.com/numaperf/examples/basic-topology/) - Annotated code examples
+
+## Crate Structure
+
+numaperf is organized as a workspace. Use the `numaperf` facade crate for everything, or pick individual crates:
+
+| Crate | Purpose |
+|-------|---------|
+| `numaperf` | Facade - re-exports all public APIs |
+| `numaperf-topo` | Topology discovery |
+| `numaperf-affinity` | Thread pinning |
+| `numaperf-mem` | Memory placement |
+| `numaperf-sched` | Work scheduling |
+| `numaperf-sharded` | Per-node data structures |
+| `numaperf-io` | Device locality |
+| `numaperf-perf` | Observability |
+
+## Platform Support
+
+| Platform | Support |
+|----------|---------|
+| Linux x86_64 | Full |
+| Linux aarch64 | Full |
+| macOS | Graceful degradation (no NUMA hardware) |
+
+## License
+
+Licensed under either of:
+
+- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
+- MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+
+at your option.
+
+## Contributing
+
+Contributions are welcome! Please see our [GitHub repository](https://github.com/Skelf-Research/numaperf) for:
+
+- [Issue tracker](https://github.com/Skelf-Research/numaperf/issues)
+- [Contributing guidelines](https://github.com/Skelf-Research/numaperf/blob/main/CONTRIBUTING.md)
+
+For support, contact [support@skelfresearch.com](mailto:support@skelfresearch.com).
+
+---
+
+Built with care by [Skelf Research](https://github.com/Skelf-Research).

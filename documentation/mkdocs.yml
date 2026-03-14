@@ -1,0 +1,88 @@
+site_name: numaperf Documentation
+site_description: NUMA-first runtime for latency-critical Rust applications
+site_url: https://docs.skelfresearch.com/numaperf/
+
+repo_name: Skelf-Research/numaperf
+repo_url: https://github.com/Skelf-Research/numaperf
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.highlight
+    - content.code.copy
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Quickstart: getting-started/quickstart.md
+    - System Requirements: getting-started/system-requirements.md
+  - Concepts:
+    - NUMA Basics: concepts/numa-basics.md
+    - Architecture: concepts/architecture.md
+    - Soft vs Hard Mode: concepts/soft-vs-hard-mode.md
+    - Memory Policies: concepts/memory-policies.md
+  - Guides:
+    - Topology Discovery: guides/topology-discovery.md
+    - Thread Pinning: guides/thread-pinning.md
+    - Memory Allocation: guides/memory-allocation.md
+    - Work Scheduling: guides/work-scheduling.md
+    - Sharded Data: guides/sharded-data.md
+    - Observability: guides/observability.md
+    - Device Locality: guides/device-locality.md
+  - API Reference:
+    - Overview: api/overview.md
+    - Core Types: api/core-types.md
+    - Topology: api/topology.md
+    - Affinity: api/affinity.md
+    - Memory: api/memory.md
+    - Scheduler: api/scheduler.md
+    - Sharded: api/sharded.md
+    - I/O: api/io.md
+    - Observability: api/observability.md
+    - Errors: api/errors.md
+  - Examples:
+    - Basic Topology: examples/basic-topology.md
+    - Worker Pool: examples/worker-pool.md
+    - Memory Placement: examples/memory-placement.md
+    - Buffer Pool: examples/buffer-pool.md
+    - Diagnostics: examples/diagnostics.md
+  - Advanced:
+    - Hard Mode: advanced/hard-mode.md
+    - Performance Tuning: advanced/performance-tuning.md
+    - Troubleshooting: advanced/troubleshooting.md
+    - Platform Support: advanced/platform-support.md
+  - Reference:
+    - CLI Tools: reference/cli.md
+    - Kernel Configuration: reference/kernel-config.md
+    - Changelog: reference/changelog.md

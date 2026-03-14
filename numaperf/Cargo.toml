@@ -1,0 +1,24 @@
+[package]
+name = "numaperf"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+keywords.workspace = true
+categories.workspace = true
+description = "NUMA-first runtime for latency-critical Rust applications"
+readme = "README.md"
+
+[dependencies]
+numaperf-core = { path = "../numaperf-core" }
+numaperf-topo = { path = "../numaperf-topo" }
+numaperf-affinity = { path = "../numaperf-affinity" }
+numaperf-mem = { path = "../numaperf-mem" }
+numaperf-sched = { path = "../numaperf-sched" }
+numaperf-sharded = { path = "../numaperf-sharded" }
+numaperf-io = { path = "../numaperf-io" }
+numaperf-perf = { path = "../numaperf-perf" }

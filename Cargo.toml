@@ -1,0 +1,30 @@
+[workspace]
+members = [
+    "numaperf-core",
+    "numaperf-topo",
+    "numaperf-affinity",
+    "numaperf-mem",
+    "numaperf-sched",
+    "numaperf-sharded",
+    "numaperf-io",
+    "numaperf-perf",
+    "numaperf",
+    "numaperf-bench",
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+rust-version = "1.70"
+authors = ["Skelf Research <support@skelfresearch.com>", "Dipankar Sarkar <me@dipankar.name>"]
+repository = "https://github.com/Skelf-Research/numaperf"
+homepage = "https://github.com/Skelf-Research/numaperf"
+documentation = "https://docs.skelfresearch.com/numaperf"
+keywords = ["numa", "memory", "performance", "scheduling", "affinity"]
+categories = ["concurrency", "memory-management", "os"]
+
+[workspace.dependencies]
+thiserror = "1.0"
+libc = "0.2"
