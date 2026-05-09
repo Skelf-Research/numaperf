@@ -139,9 +139,7 @@ impl LocalityReport {
                 recommendations.push(format!(
                     "{} has more stolen tasks ({}) than local executions ({}). \
                      Consider pinning related work to this node.",
-                    node_stats.node_id,
-                    node_stats.tasks_stolen,
-                    node_stats.local_executions
+                    node_stats.node_id, node_stats.tasks_stolen, node_stats.local_executions
                 ));
             }
         }

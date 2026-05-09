@@ -1,6 +1,6 @@
 //! Output formatting for benchmark results.
 
-use numaperf_bench::{BenchmarkResult, LocalityHealth, format_duration};
+use numaperf_bench::{format_duration, BenchmarkResult, LocalityHealth};
 use serde::Serialize;
 
 /// JSON output structure.

@@ -1,7 +1,5 @@
 //! Fallback topology discovery for non-Linux platforms or when sysfs is unavailable.
 
-use std::fs;
-
 use numaperf_core::{CpuSet, NumaError};
 
 use crate::Topology;

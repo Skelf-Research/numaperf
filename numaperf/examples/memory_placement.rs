@@ -20,8 +20,12 @@ fn main() -> Result<(), numaperf::NumaError> {
     // 1. Local policy (default) - allocate on current thread's node
     println!("1. Local Policy");
     println!("   Allocates on the current thread's NUMA node.");
-    let local_region = NumaRegion::anon(size, MemPolicy::Local, Default::default(), Prefault::Touch)?;
-    println!("   Allocated {} bytes with Local policy", local_region.len());
+    let local_region =
+        NumaRegion::anon(size, MemPolicy::Local, Default::default(), Prefault::Touch)?;
+    println!(
+        "   Allocated {} bytes with Local policy",
+        local_region.len()
+    );
     println!("   Enforcement: {:?}", local_region.enforcement());
     println!();
 
@@ -29,7 +33,12 @@ fn main() -> Result<(), numaperf::NumaError> {
     println!("2. Bind Policy");
     println!("   Strictly allocates on specified nodes only.");
     let node0 = NodeMask::single(NodeId::new(0));
-    let bind_region = NumaRegion::anon(size, MemPolicy::Bind(node0), Default::default(), Prefault::Touch)?;
+    let bind_region = NumaRegion::anon(
+        size,
+        MemPolicy::Bind(node0),
+        Default::default(),
+        Prefault::Touch,
+    )?;
     println!("   Allocated {} bytes bound to node 0", bind_region.len());
     println!("   Enforcement: {:?}", bind_region.enforcement());
     println!();

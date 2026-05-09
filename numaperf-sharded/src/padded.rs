@@ -152,6 +152,9 @@ mod tests {
         let addr1 = &values[1] as *const _ as usize;
 
         // They should be at least 128 bytes apart
-        assert!(addr1 - addr0 >= 128, "Adjacent CachePadded values too close");
+        assert!(
+            addr1 - addr0 >= 128,
+            "Adjacent CachePadded values too close"
+        );
     }
 }

@@ -153,9 +153,6 @@ impl NumaError {
     }
 }
 
-/// Result type alias for numaperf operations.
-pub type Result<T> = std::result::Result<T, NumaError>;
-
 #[cfg(test)]
 mod tests {
     use super::*;

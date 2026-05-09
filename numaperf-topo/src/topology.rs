@@ -1,7 +1,6 @@
 //! NUMA topology discovery and representation.
 
 use std::collections::HashMap;
-use std::sync::Arc;
 
 use numaperf_core::{CpuSet, NodeId, NumaError};
 
@@ -171,14 +170,6 @@ impl std::fmt::Display for Topology {
             self.cpu_count()
         )
     }
-}
-
-/// Create a shared topology.
-///
-/// This is a convenience function for the common pattern of wrapping
-/// the topology in an Arc.
-pub fn shared_topology() -> Result<Arc<Topology>, NumaError> {
-    Ok(Arc::new(Topology::discover()?))
 }
 
 #[cfg(test)]

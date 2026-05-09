@@ -20,42 +20,30 @@ fn memory_allocation_benchmarks(c: &mut Criterion) {
         group.throughput(Throughput::Bytes(size as u64));
 
         // Local policy
-        group.bench_with_input(
-            BenchmarkId::new("local", &size_name),
-            &size,
-            |b, &size| {
+        group.bench_with_input(BenchmarkId::new("local", &size_name), &size, |b, &size| {
+            b.iter(|| {
+                let region =
+                    NumaRegion::anon(size, MemPolicy::Local, Default::default(), Prefault::None)
+                        .expect("allocation");
+                black_box(region);
+            });
+        });
+
+        // Bind policy
+        if !topo.numa_nodes().is_empty() {
+            let node0 = NodeMask::single(topo.numa_nodes()[0].id());
+            group.bench_with_input(BenchmarkId::new("bind", &size_name), &size, |b, &size| {
                 b.iter(|| {
                     let region = NumaRegion::anon(
                         size,
-                        MemPolicy::Local,
+                        MemPolicy::Bind(node0.clone()),
                         Default::default(),
                         Prefault::None,
                     )
                     .expect("allocation");
                     black_box(region);
                 });
-            },
-        );
-
-        // Bind policy
-        if !topo.numa_nodes().is_empty() {
-            let node0 = NodeMask::single(topo.numa_nodes()[0].id());
-            group.bench_with_input(
-                BenchmarkId::new("bind", &size_name),
-                &size,
-                |b, &size| {
-                    b.iter(|| {
-                        let region = NumaRegion::anon(
-                            size,
-                            MemPolicy::Bind(node0.clone()),
-                            Default::default(),
-                            Prefault::None,
-                        )
-                        .expect("allocation");
-                        black_box(region);
-                    });
-                },
-            );
+            });
         }
 
         // Preferred policy
@@ -88,16 +76,18 @@ fn prefault_benchmarks(c: &mut Criterion) {
 
     group.bench_function("none", |b| {
         b.iter(|| {
-            let region = NumaRegion::anon(size, MemPolicy::Local, Default::default(), Prefault::None)
-                .expect("allocation");
+            let region =
+                NumaRegion::anon(size, MemPolicy::Local, Default::default(), Prefault::None)
+                    .expect("allocation");
             black_box(region);
         });
     });
 
     group.bench_function("touch", |b| {
         b.iter(|| {
-            let region = NumaRegion::anon(size, MemPolicy::Local, Default::default(), Prefault::Touch)
-                .expect("allocation");
+            let region =
+                NumaRegion::anon(size, MemPolicy::Local, Default::default(), Prefault::Touch)
+                    .expect("allocation");
             black_box(region);
         });
     });
@@ -114,8 +104,9 @@ fn memory_access_benchmarks(c: &mut Criterion) {
 
     // Local memory access
     group.bench_function("local_sequential", |b| {
-        let mut region = NumaRegion::anon(size, MemPolicy::Local, Default::default(), Prefault::Touch)
-            .expect("allocation");
+        let mut region =
+            NumaRegion::anon(size, MemPolicy::Local, Default::default(), Prefault::Touch)
+                .expect("allocation");
         let slice = region.as_mut_slice();
         b.iter(|| {
             for byte in slice.iter_mut() {

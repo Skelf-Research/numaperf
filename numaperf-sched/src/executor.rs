@@ -218,9 +218,8 @@ impl NumaExecutorBuilder {
         let num_nodes = self.topo.node_count();
 
         // Create per-node queues
-        let queues: Vec<Arc<NodeQueue>> = (0..num_nodes)
-            .map(|_| Arc::new(NodeQueue::new()))
-            .collect();
+        let queues: Vec<Arc<NodeQueue>> =
+            (0..num_nodes).map(|_| Arc::new(NodeQueue::new())).collect();
 
         // Create shared state
         let shared = Arc::new(SharedState {

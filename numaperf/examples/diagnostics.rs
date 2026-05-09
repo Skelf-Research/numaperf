@@ -5,9 +5,7 @@
 //!
 //! Run with: cargo run -p numaperf --example diagnostics
 
-use numaperf::{
-    LocalityHealth, LocalityReport, NodeId, StatsCollector, Topology,
-};
+use numaperf::{LocalityHealth, LocalityReport, NodeId, StatsCollector, Topology};
 use std::sync::Arc;
 
 fn main() -> Result<(), numaperf::NumaError> {

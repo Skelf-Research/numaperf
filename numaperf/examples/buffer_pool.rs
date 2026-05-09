@@ -25,7 +25,12 @@ impl NodeBufferPool {
     /// Create a new buffer pool for a specific node.
     fn new(node_id: NodeId, size: usize) -> Result<Self, numaperf::NumaError> {
         let nodes = NodeMask::single(node_id);
-        let region = NumaRegion::anon(size, MemPolicy::Bind(nodes), Default::default(), Prefault::Touch)?;
+        let region = NumaRegion::anon(
+            size,
+            MemPolicy::Bind(nodes),
+            Default::default(),
+            Prefault::Touch,
+        )?;
 
         Ok(Self {
             node_id,
@@ -40,10 +45,7 @@ impl NodeBufferPool {
         if offset + size <= self.region.len() {
             // Safety: we have exclusive access via atomic offset
             let slice = unsafe {
-                std::slice::from_raw_parts_mut(
-                    self.region.as_ptr().add(offset) as *mut u8,
-                    size,
-                )
+                std::slice::from_raw_parts_mut(self.region.as_ptr().add(offset) as *mut u8, size)
             };
             Some(slice)
         } else {

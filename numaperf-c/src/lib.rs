@@ -278,11 +278,7 @@ pub extern "C" fn npa_topology_node_cpus(
 /// Returns the distance value on success, or `u32::MAX` if unavailable.
 /// A distance of 10 typically indicates local access.
 #[no_mangle]
-pub extern "C" fn npa_topology_node_distance(
-    topo: *const NpaTopology,
-    from: u32,
-    to: u32,
-) -> u32 {
+pub extern "C" fn npa_topology_node_distance(topo: *const NpaTopology, from: u32, to: u32) -> u32 {
     if topo.is_null() {
         return u32::MAX;
     }
@@ -297,10 +293,7 @@ pub extern "C" fn npa_topology_node_distance(
 ///
 /// Returns the memory size on success, or `0` if unavailable.
 #[no_mangle]
-pub extern "C" fn npa_topology_node_memory_bytes(
-    topo: *const NpaTopology,
-    node_id: u32,
-) -> u64 {
+pub extern "C" fn npa_topology_node_memory_bytes(topo: *const NpaTopology, node_id: u32) -> u64 {
     if topo.is_null() {
         return 0;
     }
@@ -613,12 +606,7 @@ pub extern "C" fn npa_region_alloc(
         NpaMemPolicy::Interleave => MemPolicy::Interleave((&node_mask).into()),
     };
 
-    match NumaRegion::anon(
-        size as usize,
-        mem_policy,
-        huge_mode.into(),
-        prefault.into(),
-    ) {
+    match NumaRegion::anon(size as usize, mem_policy, huge_mode.into(), prefault.into()) {
         Ok(region) => Box::into_raw(Box::new(region)) as *mut NpaRegion,
         Err(e) => {
             let _ = map_error(e);

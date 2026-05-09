@@ -118,10 +118,7 @@ impl StatsCollector {
                 .map(|c| c.load(Ordering::Relaxed))
                 .unwrap_or(0);
 
-            let steals_performed = self
-                .steals_performed
-                .node_count(node_id)
-                .unwrap_or(0);
+            let steals_performed = self.steals_performed.node_count(node_id).unwrap_or(0);
 
             let stats = NodeStats {
                 node_id,

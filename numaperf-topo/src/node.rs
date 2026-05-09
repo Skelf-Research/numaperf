@@ -30,18 +30,21 @@ impl NumaNode {
     }
 
     /// Set the total memory for this node.
+    #[allow(dead_code)]
     pub(crate) fn with_memory(mut self, bytes: u64) -> Self {
         self.memory_bytes = Some(bytes);
         self
     }
 
     /// Set the distance table for this node (builder pattern).
+    #[allow(dead_code)]
     pub(crate) fn with_distances(mut self, distances: Vec<u32>) -> Self {
         self.distances = distances;
         self
     }
 
     /// Set the distance table for this node (in-place).
+    #[allow(dead_code)]
     pub(crate) fn set_distances(&mut self, distances: Vec<u32>) {
         self.distances = distances;
     }

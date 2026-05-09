@@ -146,7 +146,10 @@ fn run_bench(args: BenchArgs) -> Result<(), Box<dyn std::error::Error>> {
     match args.format {
         OutputFormat::Text => {
             println!("=== numaperf Benchmark Suite ===\n");
-            println!("System: {} NUMA nodes, {} CPUs", caps.numa_node_count, threads);
+            println!(
+                "System: {} NUMA nodes, {} CPUs",
+                caps.numa_node_count, threads
+            );
             println!("Hard mode supported: {}", caps.supports_hard_mode());
             println!();
         }

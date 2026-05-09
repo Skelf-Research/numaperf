@@ -159,30 +159,18 @@ impl LocalityStats {
     /// Generate a human-readable summary.
     pub fn summary(&self) -> String {
         let mut s = String::new();
-        s.push_str(&format!(
-            "Locality Stats ({} nodes)\n",
-            self.node_count()
-        ));
-        s.push_str(&format!(
-            "  Total processed: {}\n",
-            self.total_processed()
-        ));
+        s.push_str(&format!("Locality Stats ({} nodes)\n", self.node_count()));
+        s.push_str(&format!("  Total processed: {}\n", self.total_processed()));
         s.push_str(&format!(
             "  Local executions: {}\n",
             self.local_executions()
         ));
-        s.push_str(&format!(
-            "  Remote steals: {}\n",
-            self.remote_steals()
-        ));
+        s.push_str(&format!("  Remote steals: {}\n", self.remote_steals()));
         s.push_str(&format!(
             "  Locality ratio: {:.1}%\n",
             self.locality_ratio() * 100.0
         ));
-        s.push_str(&format!(
-            "  Queue depth: {}\n",
-            self.total_queue_depth()
-        ));
+        s.push_str(&format!("  Queue depth: {}\n", self.total_queue_depth()));
         s.push_str("\nPer-node breakdown:\n");
         for stats in &self.node_stats {
             s.push_str(&format!("  {}\n", stats));

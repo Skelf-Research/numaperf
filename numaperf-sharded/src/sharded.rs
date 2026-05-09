@@ -165,7 +165,10 @@ impl<T: std::fmt::Debug> std::fmt::Debug for NumaSharded<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("NumaSharded")
             .field("num_shards", &self.shards.len())
-            .field("shards", &self.shards.iter().map(|s| s.get()).collect::<Vec<_>>())
+            .field(
+                "shards",
+                &self.shards.iter().map(|s| s.get()).collect::<Vec<_>>(),
+            )
             .finish()
     }
 }
@@ -215,10 +218,7 @@ mod tests {
         });
 
         // At least one shard should have been incremented
-        let sum: usize = sharded
-            .iter()
-            .map(|(_, c)| c.load(Ordering::SeqCst))
-            .sum();
+        let sum: usize = sharded.iter().map(|(_, c)| c.load(Ordering::SeqCst)).sum();
         assert_eq!(sum, 1);
     }
 
@@ -257,9 +257,7 @@ mod tests {
         let topo = test_topology();
         // Use AtomicUsize for thread-safe initialization with different values
         let counter = std::sync::atomic::AtomicUsize::new(0);
-        let sharded = NumaSharded::new(&topo, || {
-            counter.fetch_add(1, Ordering::SeqCst)
-        });
+        let sharded = NumaSharded::new(&topo, || counter.fetch_add(1, Ordering::SeqCst));
 
         // Each shard should have a different value
         let values: Vec<_> = sharded.iter().map(|(_, &v)| v).collect();

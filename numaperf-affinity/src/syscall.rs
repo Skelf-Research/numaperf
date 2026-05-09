@@ -1,20 +1,17 @@
 //! Low-level syscall wrappers for CPU affinity.
 
-use std::io;
-use std::mem;
-
 use numaperf_core::{CpuSet, NumaError};
 
 /// Get the current thread's CPU affinity mask.
 #[cfg(target_os = "linux")]
 pub fn get_affinity() -> Result<CpuSet, NumaError> {
-    let mut mask: libc::cpu_set_t = unsafe { mem::zeroed() };
-    let size = mem::size_of::<libc::cpu_set_t>();
+    let mut mask: libc::cpu_set_t = unsafe { std::mem::zeroed() };
+    let size = std::mem::size_of::<libc::cpu_set_t>();
 
     let ret = unsafe { libc::sched_getaffinity(0, size, &mut mask) };
 
     if ret != 0 {
-        return Err(NumaError::pinning(io::Error::last_os_error()));
+        return Err(NumaError::pinning(std::io::Error::last_os_error()));
     }
 
     Ok(cpu_set_from_libc(&mask))
@@ -24,12 +21,12 @@ pub fn get_affinity() -> Result<CpuSet, NumaError> {
 #[cfg(target_os = "linux")]
 pub fn set_affinity(cpus: &CpuSet) -> Result<(), NumaError> {
     let mask = cpu_set_to_libc(cpus);
-    let size = mem::size_of::<libc::cpu_set_t>();
+    let size = std::mem::size_of::<libc::cpu_set_t>();
 
     let ret = unsafe { libc::sched_setaffinity(0, size, &mask) };
 
     if ret != 0 {
-        return Err(NumaError::pinning(io::Error::last_os_error()));
+        return Err(NumaError::pinning(std::io::Error::last_os_error()));
     }
 
     Ok(())
@@ -53,7 +50,7 @@ fn cpu_set_from_libc(mask: &libc::cpu_set_t) -> CpuSet {
 /// Convert our CpuSet to libc cpu_set_t.
 #[cfg(target_os = "linux")]
 fn cpu_set_to_libc(cpus: &CpuSet) -> libc::cpu_set_t {
-    let mut mask: libc::cpu_set_t = unsafe { mem::zeroed() };
+    let mut mask: libc::cpu_set_t = unsafe { std::mem::zeroed() };
 
     unsafe {
         libc::CPU_ZERO(&mut mask);
@@ -86,6 +83,7 @@ pub fn set_affinity(_cpus: &CpuSet) -> Result<(), NumaError> {
 
 #[cfg(test)]
 mod tests {
+    #[cfg(target_os = "linux")]
     use super::*;
 
     #[test]

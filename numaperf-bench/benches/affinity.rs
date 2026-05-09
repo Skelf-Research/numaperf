@@ -13,7 +13,7 @@ fn affinity_benchmarks(c: &mut Criterion) {
     // Get current affinity
     group.bench_function("get_affinity", |b| {
         b.iter(|| {
-            let affinity = numaperf::get_affinity();
+            let affinity = numaperf::get_affinity().ok();
             black_box(affinity);
         });
     });
@@ -62,21 +62,21 @@ fn cpuset_benchmarks(c: &mut Criterion) {
     // Parse CPU set
     group.bench_function("parse_single", |b| {
         b.iter(|| {
-            let cpuset = CpuSet::parse("0");
+            let cpuset = CpuSet::parse("0").ok();
             black_box(cpuset);
         });
     });
 
     group.bench_function("parse_range", |b| {
         b.iter(|| {
-            let cpuset = CpuSet::parse("0-7");
+            let cpuset = CpuSet::parse("0-7").ok();
             black_box(cpuset);
         });
     });
 
     group.bench_function("parse_complex", |b| {
         b.iter(|| {
-            let cpuset = CpuSet::parse("0-3,8-11,16-19");
+            let cpuset = CpuSet::parse("0-3,8-11,16-19").ok();
             black_box(cpuset);
         });
     });

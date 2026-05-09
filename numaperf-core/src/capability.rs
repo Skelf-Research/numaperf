@@ -62,9 +62,7 @@ impl Capabilities {
     /// - CAP_SYS_NICE for strict CPU affinity
     /// - NUMA balancing disabled to prevent kernel migration
     pub fn supports_hard_mode(&self) -> bool {
-        self.strict_memory_binding
-            && self.strict_cpu_affinity
-            && self.numa_balancing_disabled
+        self.strict_memory_binding && self.strict_cpu_affinity && self.numa_balancing_disabled
     }
 
     /// Get a list of missing capabilities required for hard mode.
@@ -97,11 +95,19 @@ impl Capabilities {
         s.push_str(&format!("NUMA nodes detected: {}\n", self.numa_node_count));
         s.push_str(&format!(
             "CAP_SYS_ADMIN (strict memory binding): {}\n",
-            if self.strict_memory_binding { "yes" } else { "no" }
+            if self.strict_memory_binding {
+                "yes"
+            } else {
+                "no"
+            }
         ));
         s.push_str(&format!(
             "CAP_SYS_NICE (strict CPU affinity): {}\n",
-            if self.strict_cpu_affinity { "yes" } else { "no" }
+            if self.strict_cpu_affinity {
+                "yes"
+            } else {
+                "no"
+            }
         ));
         s.push_str(&format!(
             "CAP_IPC_LOCK (memory locking): {}\n",
@@ -109,11 +115,19 @@ impl Capabilities {
         ));
         s.push_str(&format!(
             "NUMA balancing disabled: {}\n",
-            if self.numa_balancing_disabled { "yes" } else { "no" }
+            if self.numa_balancing_disabled {
+                "yes"
+            } else {
+                "no"
+            }
         ));
         s.push_str(&format!(
             "\nHard mode supported: {}\n",
-            if self.supports_hard_mode() { "YES" } else { "NO" }
+            if self.supports_hard_mode() {
+                "YES"
+            } else {
+                "NO"
+            }
         ));
 
         if !self.supports_hard_mode() {
@@ -132,7 +146,11 @@ impl std::fmt::Display for Capabilities {
             f,
             "Capabilities(nodes={}, hard_mode={})",
             self.numa_node_count,
-            if self.supports_hard_mode() { "supported" } else { "unavailable" }
+            if self.supports_hard_mode() {
+                "supported"
+            } else {
+                "unavailable"
+            }
         )
     }
 }
@@ -201,11 +219,7 @@ fn count_numa_nodes() -> usize {
         Ok(entries) => {
             let count = entries
                 .filter_map(|e| e.ok())
-                .filter(|e| {
-                    e.file_name()
-                        .to_string_lossy()
-                        .starts_with("node")
-                })
+                .filter(|e| e.file_name().to_string_lossy().starts_with("node"))
                 .count();
             // Ensure at least 1 node
             std::cmp::max(count, 1)
@@ -243,8 +257,8 @@ mod tests {
     fn test_capability_bit_check() {
         // Test hex parsing
         assert!(check_capability_bit("0000000000200000", CAP_SYS_ADMIN)); // bit 21
-        assert!(check_capability_bit("0000000000800000", CAP_SYS_NICE));  // bit 23
-        assert!(check_capability_bit("0000000000004000", CAP_IPC_LOCK));  // bit 14
+        assert!(check_capability_bit("0000000000800000", CAP_SYS_NICE)); // bit 23
+        assert!(check_capability_bit("0000000000004000", CAP_IPC_LOCK)); // bit 14
 
         // Full caps (all bits set)
         assert!(check_capability_bit("ffffffffffffffff", CAP_SYS_ADMIN));

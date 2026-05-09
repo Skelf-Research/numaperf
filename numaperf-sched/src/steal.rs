@@ -118,7 +118,10 @@ mod tests {
 
     #[test]
     fn test_default_is_local_then_socket() {
-        assert_eq!(StealPolicy::default(), StealPolicy::LocalThenSocketThenRemote);
+        assert_eq!(
+            StealPolicy::default(),
+            StealPolicy::LocalThenSocketThenRemote
+        );
     }
 
     #[test]

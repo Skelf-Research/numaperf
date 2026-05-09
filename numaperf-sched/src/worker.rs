@@ -40,6 +40,7 @@ impl SharedState {
 }
 
 /// A pool of worker threads for a single NUMA node.
+#[allow(dead_code)]
 pub struct WorkerPool {
     /// The node this pool is assigned to.
     node_id: NodeId,
@@ -47,16 +48,13 @@ pub struct WorkerPool {
     threads: Vec<JoinHandle<()>>,
 }
 
+#[allow(dead_code)]
 impl WorkerPool {
     /// Create a new worker pool for a node (soft mode).
     ///
     /// Spawns `num_workers` threads, all pinned to CPUs on `node_id`.
     /// Workers will continue even if pinning fails.
-    pub fn new(
-        node_id: NodeId,
-        num_workers: usize,
-        shared: Arc<SharedState>,
-    ) -> Self {
+    pub fn new(node_id: NodeId, num_workers: usize, shared: Arc<SharedState>) -> Self {
         Self::new_with_mode(node_id, num_workers, shared, HardMode::Soft)
             .expect("soft mode worker pool creation should not fail")
     }
@@ -205,7 +203,8 @@ mod tests {
         let cpus = numaperf_core::CpuSet::parse("0-7").unwrap();
         let topo = Arc::new(Topology::single_node(cpus));
 
-        let queues: Vec<Arc<NodeQueue>> = (0..num_nodes).map(|_| Arc::new(NodeQueue::new())).collect();
+        let queues: Vec<Arc<NodeQueue>> =
+            (0..num_nodes).map(|_| Arc::new(NodeQueue::new())).collect();
 
         Arc::new(SharedState {
             topo,
@@ -228,12 +227,8 @@ mod tests {
     #[test]
     fn test_worker_pool_soft_mode() {
         let shared = make_shared_state(1);
-        let pool = WorkerPool::new_with_mode(
-            NodeId::new(0),
-            1,
-            Arc::clone(&shared),
-            HardMode::Soft,
-        );
+        let pool =
+            WorkerPool::new_with_mode(NodeId::new(0), 1, Arc::clone(&shared), HardMode::Soft);
         assert!(pool.is_ok());
 
         let pool = pool.unwrap();
@@ -248,12 +243,8 @@ mod tests {
         let shared = make_shared_state(1);
 
         // Strict mode - may succeed or fail depending on permissions
-        let result = WorkerPool::new_with_mode(
-            NodeId::new(0),
-            1,
-            Arc::clone(&shared),
-            HardMode::Strict,
-        );
+        let result =
+            WorkerPool::new_with_mode(NodeId::new(0), 1, Arc::clone(&shared), HardMode::Strict);
 
         // Either succeeds or returns HardModeUnavailable
         match result {

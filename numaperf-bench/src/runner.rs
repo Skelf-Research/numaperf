@@ -1,8 +1,8 @@
 //! Benchmark runners for each category.
 
 use numaperf::{
-    CpuSet, MemPolicy, NodeMask, NumaExecutor, NumaRegion, Prefault,
-    ScopedPin, ShardedCounter, StealPolicy, Topology,
+    CpuSet, MemPolicy, NodeMask, NumaExecutor, NumaRegion, Prefault, ScopedPin, ShardedCounter,
+    StealPolicy, Topology,
 };
 use numaperf_bench::BenchmarkResult;
 use std::sync::atomic::{AtomicU64, Ordering};
@@ -86,7 +86,8 @@ pub fn run_memory_benchmarks(
     {
         let start = Instant::now();
         for _ in 0..iterations.min(100) {
-            let region = NumaRegion::anon(size, MemPolicy::Local, Default::default(), Prefault::None)?;
+            let region =
+                NumaRegion::anon(size, MemPolicy::Local, Default::default(), Prefault::None)?;
             std::hint::black_box(&region);
         }
         let duration = start.elapsed();
@@ -105,7 +106,12 @@ pub fn run_memory_benchmarks(
         let node0 = NodeMask::single(topo.numa_nodes()[0].id());
         let start = Instant::now();
         for _ in 0..iterations.min(100) {
-            let region = NumaRegion::anon(size, MemPolicy::Bind(node0.clone()), Default::default(), Prefault::None)?;
+            let region = NumaRegion::anon(
+                size,
+                MemPolicy::Bind(node0.clone()),
+                Default::default(),
+                Prefault::None,
+            )?;
             std::hint::black_box(&region);
         }
         let duration = start.elapsed();
@@ -123,7 +129,8 @@ pub fn run_memory_benchmarks(
     {
         let start = Instant::now();
         for _ in 0..iterations.min(50) {
-            let region = NumaRegion::anon(size, MemPolicy::Local, Default::default(), Prefault::Touch)?;
+            let region =
+                NumaRegion::anon(size, MemPolicy::Local, Default::default(), Prefault::Touch)?;
             std::hint::black_box(&region);
         }
         let duration = start.elapsed();

@@ -27,11 +27,7 @@ pub fn print_affinity(topo: &Topology, affinity: &CpuSet) {
         println!("Node: {} (single node - optimal)", nodes[0].as_u32());
     } else {
         let node_list: Vec<u32> = nodes.iter().map(|n| n.as_u32()).collect();
-        println!(
-            "Nodes: {:?} (spans {} nodes)",
-            node_list,
-            nodes.len()
-        );
+        println!("Nodes: {:?} (spans {} nodes)", node_list, nodes.len());
     }
 
     // Check if affinity matches all CPUs

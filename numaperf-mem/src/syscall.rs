@@ -1,9 +1,8 @@
 //! Low-level syscall wrappers for memory mapping and NUMA binding.
 
 use std::io;
-use std::ptr;
 
-use numaperf_core::{EnforcementLevel, NodeMask, NumaError};
+use numaperf_core::{EnforcementLevel, NumaError};
 
 use crate::huge::HugePageMode;
 use crate::policy::MemPolicy;
@@ -42,7 +41,7 @@ pub fn mmap_anon(size: usize, huge: HugePageMode) -> Result<MmapResult, NumaErro
 
     let ptr = unsafe {
         libc::mmap(
-            ptr::null_mut(),
+            std::ptr::null_mut(),
             size,
             libc::PROT_READ | libc::PROT_WRITE,
             flags,
@@ -144,7 +143,7 @@ fn policy_to_mbind_args(policy: &MemPolicy) -> (i32, Vec<libc::c_ulong>, libc::c
             (mpol::MPOL_BIND, nodemask, maxnode)
         }
         MemPolicy::Preferred(node) => {
-            let mask = NodeMask::single(*node);
+            let mask = numaperf_core::NodeMask::single(*node);
             let (nodemask, maxnode) = node_mask_to_bits(&mask);
             (mpol::MPOL_PREFERRED, nodemask, maxnode)
         }

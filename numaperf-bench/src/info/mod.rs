@@ -15,23 +15,14 @@ pub fn run(args: InfoArgs) -> Result<(), Box<dyn std::error::Error>> {
     let current_affinity = get_affinity().ok();
 
     match args.format {
-        OutputFormat::Text => {
-            print_text(&topo, &caps, current_affinity.as_ref(), &args)
-        }
-        OutputFormat::Json => {
-            print_json(&topo, &caps, current_affinity.as_ref(), &args)
-        }
+        OutputFormat::Text => print_text(&topo, &caps, current_affinity.as_ref(), &args),
+        OutputFormat::Json => print_json(&topo, &caps, current_affinity.as_ref(), &args),
     }
 
     Ok(())
 }
 
-fn print_text(
-    topo: &Topology,
-    caps: &Capabilities,
-    affinity: Option<&CpuSet>,
-    args: &InfoArgs,
-) {
+fn print_text(topo: &Topology, caps: &Capabilities, affinity: Option<&CpuSet>, args: &InfoArgs) {
     match args.section {
         InfoSection::All => {
             println!("=== numaperf System Information ===\n");
@@ -64,12 +55,7 @@ fn print_text(
     }
 }
 
-fn print_json(
-    topo: &Topology,
-    caps: &Capabilities,
-    affinity: Option<&CpuSet>,
-    args: &InfoArgs,
-) {
+fn print_json(topo: &Topology, caps: &Capabilities, affinity: Option<&CpuSet>, args: &InfoArgs) {
     let output = match args.section {
         InfoSection::All => {
             let full = json_output::FullSystemInfo {

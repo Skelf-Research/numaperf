@@ -171,12 +171,10 @@ impl ScopedPin {
                     _marker: PhantomData,
                 })
             }
-            Err(e) if mode.is_strict() => {
-                Err(NumaError::hard_mode_unavailable(
-                    "cpu affinity",
-                    format!("failed to set affinity: {}", e),
-                ))
-            }
+            Err(e) if mode.is_strict() => Err(NumaError::hard_mode_unavailable(
+                "cpu affinity",
+                format!("failed to set affinity: {}", e),
+            )),
             Err(e) => Err(e),
         }
     }
@@ -331,8 +329,8 @@ mod tests {
         let first_cpu = original.first().unwrap();
 
         {
-            let _pin = ScopedPin::pin_to_cpu_with_mode(first_cpu, HardMode::Soft)
-                .expect("should pin");
+            let _pin =
+                ScopedPin::pin_to_cpu_with_mode(first_cpu, HardMode::Soft).expect("should pin");
 
             let current = syscall::get_affinity().expect("should get affinity");
             assert_eq!(current.count(), 1);
