@@ -1,0 +1,34 @@
+language = "C"
+cpp_compat = true
+header = """
+/*
+ * numaperf C API
+ *
+ * Stable C bindings for NUMA topology discovery, thread affinity,
+ * and NUMA-aware memory allocation.
+ *
+ * License: MIT
+ * Repository: https://github.com/Skelf-Research/numaperf
+ */
+"""
+include_guard = "NPAPERF_H"
+style = "type"
+line_length = 100
+tab_width = 4
+
+[enum]
+rename_variants = "ScreamingSnakeCase"
+
+[parse]
+parse_deps = false
+
+[export]
+include = [
+    "NpaTopology",
+    "NpaRegion",
+    "NpaCpuSet",
+    "NpaNodeMask",
+    "NpaMemPolicy",
+    "NpaHugePageMode",
+    "NpaPrefault",
+]

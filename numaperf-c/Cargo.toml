@@ -1,0 +1,25 @@
+[package]
+name = "numaperf-c"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+keywords = ["numa", "memory", "performance", "ffi", "c-api"]
+categories = ["concurrency", "memory-management", "os", "external-ffi-bindings"]
+description = "C FFI bindings for numaperf - NUMA topology, affinity, and memory placement"
+
+[lib]
+crate-type = ["cdylib", "staticlib", "rlib"]
+
+[dependencies]
+numaperf-core = { path = "../numaperf-core" }
+numaperf-topo = { path = "../numaperf-topo" }
+numaperf-affinity = { path = "../numaperf-affinity" }
+numaperf-mem = { path = "../numaperf-mem" }
+
+[dev-dependencies]
+libc = { workspace = true }

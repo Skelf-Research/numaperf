@@ -264,6 +264,9 @@ mod tests {
             Err(NumaError::HardModeUnavailable { .. }) => {
                 // Expected if we don't have permission
             }
+            Err(NumaError::NotSupported { .. }) => {
+                // Expected on platforms without affinity support
+            }
             Err(e) => {
                 panic!("Unexpected error: {}", e);
             }

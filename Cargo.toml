@@ -10,6 +10,7 @@ members = [
     "numaperf-perf",
     "numaperf",
     "numaperf-bench",
+    "numaperf-c",
 ]
 resolver = "2"
 

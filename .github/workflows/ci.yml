@@ -26,6 +26,9 @@ jobs:
       - name: Check
         run: cargo check --workspace --all-targets
 
+      - name: Check C library build
+        run: cargo build -p numaperf-c --release
+
   fmt:
     name: Format
     runs-on: ubuntu-latest
@@ -88,3 +91,21 @@ jobs:
         run: cargo doc --workspace --no-deps
         env:
           RUSTDOCFLAGS: -Dwarnings
+
+  c-headers:
+    name: C Headers
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install cbindgen
+        run: cargo install cbindgen
+
+      - name: Generate C headers
+        run: cbindgen --crate numaperf-c --config numaperf-c/cbindgen.toml --output numaperf-c/include/numaperf.h
+
+      - name: Check header is up-to-date
+        run: git diff --exit-code numaperf-c/include/numaperf.h

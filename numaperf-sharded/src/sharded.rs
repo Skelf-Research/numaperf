@@ -142,15 +142,16 @@ impl<T> NumaSharded<T> {
 
     /// Determine the current thread's NUMA node.
     fn current_node(&self) -> NodeId {
-        // Get current CPU using sched_getcpu()
-        let cpu = unsafe { libc::sched_getcpu() };
-        if cpu < 0 {
-            // Fallback to node 0 if we can't determine the CPU
-            return NodeId::new(0);
+        #[cfg(target_os = "linux")]
+        {
+            let cpu = unsafe { libc::sched_getcpu() };
+            if cpu >= 0 {
+                return self.topo.node_for_cpu(cpu as u32).unwrap_or(NodeId::new(0));
+            }
         }
 
-        // Map CPU to NUMA node
-        self.topo.node_for_cpu(cpu as u32).unwrap_or(NodeId::new(0))
+        // Fallback to node 0 on non-Linux or if sched_getcpu fails
+        NodeId::new(0)
     }
 }
 
