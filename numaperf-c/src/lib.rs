@@ -1,3 +1,5 @@
+#![allow(clippy::not_unsafe_ptr_arg_deref)]
+
 //! C FFI bindings for numaperf.
 //!
 //! This crate exposes a stable C API for:
@@ -101,15 +103,9 @@ pub enum NpaRegion {}
 ///
 /// Use `npa_cpuset_add()` and `npa_cpuset_contains()` to manipulate.
 #[repr(C)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Default)]
 pub struct NpaCpuSet {
     bits: [u64; 16],
-}
-
-impl Default for NpaCpuSet {
-    fn default() -> Self {
-        Self { bits: [0; 16] }
-    }
 }
 
 impl From<&CpuSet> for NpaCpuSet {
@@ -139,15 +135,9 @@ impl From<&NpaCpuSet> for CpuSet {
 
 /// A set of up to 64 NUMA nodes, represented as a bitmap.
 #[repr(C)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Default)]
 pub struct NpaNodeMask {
     bits: u64,
-}
-
-impl Default for NpaNodeMask {
-    fn default() -> Self {
-        Self { bits: 0 }
-    }
 }
 
 impl From<&NodeMask> for NpaNodeMask {

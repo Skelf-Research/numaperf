@@ -3,9 +3,10 @@
 use crate::stats::LocalityStats;
 
 /// Health classification based on locality ratio.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
 pub enum LocalityHealth {
     /// > 90% local execution rate.
+    #[default]
     Excellent,
     /// 70-90% local execution rate.
     Good,
@@ -50,12 +51,6 @@ impl std::fmt::Display for LocalityHealth {
             LocalityHealth::Fair => write!(f, "FAIR"),
             LocalityHealth::Poor => write!(f, "POOR"),
         }
-    }
-}
-
-impl Default for LocalityHealth {
-    fn default() -> Self {
-        LocalityHealth::Excellent
     }
 }
 

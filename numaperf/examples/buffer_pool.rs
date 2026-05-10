@@ -40,6 +40,7 @@ impl NodeBufferPool {
     }
 
     /// Allocate bytes from this pool (simple bump allocator).
+    #[allow(clippy::mut_from_ref)]
     fn alloc(&self, size: usize) -> Option<&mut [u8]> {
         let offset = self.offset.fetch_add(size, Ordering::SeqCst);
         if offset + size <= self.region.len() {

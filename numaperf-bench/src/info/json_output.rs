@@ -130,7 +130,7 @@ fn format_cpu_list(cpus: &CpuSet) -> String {
         }
 
         if !result.is_empty() {
-            result.push_str(",");
+            result.push(',');
         }
 
         if end > start {
