@@ -157,7 +157,7 @@ fn policy_to_mbind_args(policy: &MemPolicy) -> (i32, Vec<libc::c_ulong>, libc::c
 
 /// Convert NodeMask to the format expected by mbind.
 #[cfg(target_os = "linux")]
-fn node_mask_to_bits(mask: &NodeMask) -> (Vec<libc::c_ulong>, libc::c_ulong) {
+fn node_mask_to_bits(mask: &numaperf_core::NodeMask) -> (Vec<libc::c_ulong>, libc::c_ulong) {
     let bits = mask.as_raw();
 
     // mbind expects an array of unsigned longs
