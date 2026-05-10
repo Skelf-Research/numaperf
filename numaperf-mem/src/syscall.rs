@@ -10,14 +10,10 @@ use crate::policy::MemPolicy;
 /// NUMA memory policy flags for mbind/set_mempolicy.
 #[cfg(target_os = "linux")]
 mod mpol {
-    pub const MPOL_DEFAULT: i32 = 0;
     pub const MPOL_PREFERRED: i32 = 1;
     pub const MPOL_BIND: i32 = 2;
     pub const MPOL_INTERLEAVE: i32 = 3;
     pub const MPOL_LOCAL: i32 = 4;
-
-    // Flags
-    pub const MPOL_F_STATIC_NODES: u32 = 1 << 15;
 }
 
 /// Result of an mmap operation.
